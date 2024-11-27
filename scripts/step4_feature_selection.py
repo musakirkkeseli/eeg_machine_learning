@@ -1,4 +1,11 @@
 # step4_feature_selection.py
+import os
+import sys
+
+# config.py'nin bulunduğu ana dizini modül arama yoluna ekle
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import NORMALIZED_EEG_FILE, DATA_LOCO_FILE, SELECTED_FEATURES_FILE, STEP4_FEATURE_SCORES
 import numpy as np
 from sklearn.feature_selection import SelectKBest, f_classif
 import matplotlib.pyplot as plt
@@ -30,7 +37,7 @@ def select_features(data_file, labels_file, selected_out, k=10):
     plt.ylabel("F-Skor")
     plt.legend()
     plt.grid()
-    plt.savefig("step4_feature_scores.png")
+    plt.savefig(STEP4_FEATURE_SCORES)
     plt.show()
     print("Özellik skorları grafiği kaydedildi: step4_feature_scores.png")
 
@@ -43,11 +50,11 @@ def select_features(data_file, labels_file, selected_out, k=10):
 
 if __name__ == "__main__":
     # Girdi dosyaları
-    data_file = 'Normalized_Filtered_DataEEG.npy'  # step3'ten gelen dosya
-    labels_file = 'DataLoco.npy'  # Hedef değişken
+    data_file = NORMALIZED_EEG_FILE  # step3'ten gelen dosya
+    labels_file = DATA_LOCO_FILE  # Hedef değişken
 
     # Çıktı dosyası
-    selected_out = 'Selected_Features.npy'
+    selected_out = SELECTED_FEATURES_FILE
 
     # Özellik sayısı
     k = 10

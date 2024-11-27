@@ -1,4 +1,11 @@
 # step2_filter_and_psd.py
+import os
+import sys
+
+# config.py'nin bulunduğu ana dizini modül arama yoluna ekle
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import DATA_EEG_FILE, FILTERED_EEG_FILE, STEP2_PSD_COMPARISON
 import numpy as np
 from scipy.signal import butter, lfilter, welch
 import matplotlib.pyplot as plt
@@ -50,14 +57,14 @@ def filter_and_analyze(data_file, filtered_out, fs=128):
     plt.ylabel("Güç Yoğunluğu")
     plt.legend()
     plt.grid()
-    plt.savefig("step2_psd_comparison.png")
+    plt.savefig(STEP2_PSD_COMPARISON) 
     plt.show()
     print("PSD grafiği oluşturuldu: step2_psd_comparison.png")
 
 if __name__ == "__main__":
     # Girdi ve çıktı dosyaları
-    data_file = 'DataEEG.npy'  # step1 tarafından üretilmiş dosya
-    filtered_out = 'Filtered_DataEEG.npy'
+    data_file = DATA_EEG_FILE # step1 tarafından üretilmiş dosya
+    filtered_out = FILTERED_EEG_FILE 
 
     # Örnekleme frekansı
     fs = 128

@@ -1,21 +1,20 @@
 # step1_extract_and_save.py
 import numpy as np
 import h5py
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import MAT_FILE, DATA_EEG_FILE, DATA_LOCO_FILE
+
 
 def load_and_save_data(mat_file, dataset_path, output_file, reshape_dims=None, replicate=1):
     """
     H5 dosyasından belirtilen veri kümesini yükler, işler ve bir numpy dosyasına kaydeder.
-
-    Args:
-    - mat_file (str): .mat dosyasının yolu
-    - dataset_path (str): H5 dosyası içindeki veri kümesinin yolu
-    - output_file (str): Çıktı dosyasının ismi
-    - reshape_dims (tuple): Verilerin yeniden şekillendirileceği boyutlar (ör. (32, 15360))
-    - replicate (int): Her bir satırı kaç kez çoğaltılacağı (ör. loco için 32)
     """
     with h5py.File(mat_file, 'r') as f:
         dataset = f.get(dataset_path)
-
         if dataset is None:
             print(f"{dataset_path} not found in the file.")
             return
@@ -34,15 +33,8 @@ def load_and_save_data(mat_file, dataset_path, output_file, reshape_dims=None, r
         print(f"{dataset_path} saved to {output_file}. Shape: {final_data.shape}")
 
 if __name__ == "__main__":
-    # Dosya yolları ve parametreler
-    mat_file = 'Loco_Data_EEG32.mat'
-
     # Data0 işlemi
-    data0_path = 'Loco_Data_EEG/data0'
-    data0_out = 'DataEEG.npy'
-    load_and_save_data(mat_file, data0_path, data0_out, reshape_dims=(32, 15360), replicate=1)
+    load_and_save_data(MAT_FILE, 'Loco_Data_EEG/data0', DATA_EEG_FILE, reshape_dims=(32, 15360), replicate=1)
 
     # Loco işlemi
-    loco_path = 'Loco_Data_EEG/loco'
-    loco_out = 'DataLoco.npy'
-    load_and_save_data(mat_file, loco_path, loco_out, replicate=32)
+    load_and_save_data(MAT_FILE, 'Loco_Data_EEG/loco', DATA_LOCO_FILE, replicate=32)

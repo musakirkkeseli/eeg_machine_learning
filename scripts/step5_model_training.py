@@ -1,4 +1,11 @@
 # step5_model_training.py
+import os
+import sys
+
+# config.py'nin bulunduğu ana dizini modül arama yoluna ekle
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import SELECTED_FEATURES_FILE, DATA_LOCO_FILE
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
@@ -71,8 +78,8 @@ def evaluate_model(y_true, y_pred):
 
 if __name__ == "__main__":
     # Girdi dosyaları
-    features_file = 'Selected_Features.npy'  # step4'ten gelen dosya
-    labels_file = 'DataLoco.npy'  # Hedef değişken
+    features_file = SELECTED_FEATURES_FILE  # step4'ten gelen dosya
+    labels_file = DATA_LOCO_FILE  # Hedef değişken
 
     # Model eğitimi ve değerlendirmesi
     train_and_evaluate(features_file, labels_file)

@@ -1,44 +1,52 @@
 import os
 import subprocess
+import time
+from config import *
 
 # Her adım ve bu adımın gerektirdiği giriş/çıkış dosyaları
 steps = [
     {
         "name": "Step 1 - Extract and Save",
-        "script": "step1_extract_and_save.py",
-        "outputs": ["DataEEG.npy", "DataLoco.npy"]
+        "script": STEP1_SCRIPT,
+        "outputs": [DATA_EEG_FILE, DATA_LOCO_FILE],
     },
     {
         "name": "Step 2 - Filter and PSD",
-        "script": "step2_filter_and_psd.py",
-        "inputs": ["DataEEG.npy"],
-        "outputs": ["Filtered_DataEEG.npy", "step2_psd_comparison.png"]
+        "script": STEP2_SCRIPT,
+        "inputs": [DATA_EEG_FILE],
+        "outputs": [FILTERED_EEG_FILE, STEP2_PSD_COMPARISON],
     },
     {
         "name": "Step 3 - Normalize and PSD",
-        "script": "step3_normalize_and_psd.py",
-        "inputs": ["Filtered_DataEEG.npy"],
-        "outputs": ["Normalized_Filtered_DataEEG.npy", "step3_psd_comparison.png"]
+        "script": STEP3_SCRIPT,
+        "inputs": [FILTERED_EEG_FILE],
+        "outputs": [NORMALIZED_EEG_FILE, STEP3_PSD_COMPARISON],
     },
     {
         "name": "Step 4 - Feature Selection",
-        "script": "step4_feature_selection.py",
-        "inputs": ["Normalized_Filtered_DataEEG.npy", "DataLoco.npy"],
-        "outputs": ["Selected_Features.npy", "step4_feature_scores.png"]
+        "script": STEP4_SCRIPT,
+        "inputs": [NORMALIZED_EEG_FILE, DATA_LOCO_FILE],
+        "outputs": [SELECTED_FEATURES_FILE, STEP4_FEATURE_SCORES],
     },
     {
         "name": "Step 5 - Model Training",
-        "script": "step5_model_training.py",
-        "inputs": ["Selected_Features.npy", "DataLoco.npy"],
-        "outputs": []
-    }
+        "script": STEP5_SCRIPT,
+        "inputs": [SELECTED_FEATURES_FILE, DATA_LOCO_FILE],
+        "outputs": [],
+    },
 ]
 
-def check_files_exist(files):
+def check_files_exist(files, retries=3, delay=0.5):
     """
-    Dosyaların mevcut olup olmadığını kontrol eder.
+    Dosyaların mevcut olup olmadığını kontrol eder, belirli aralıklarla yeniden dener.
+    - retries: Kaç kez kontrol edeceğini belirtir.
+    - delay: Kontroller arasındaki bekleme süresi (saniye).
     """
-    return all(os.path.exists(file) for file in files)
+    for _ in range(retries):
+        if all(os.path.exists(file) for file in files):
+            return True
+        time.sleep(delay)
+    return False
 
 def run_script(script_name):
     """
@@ -66,12 +74,11 @@ def run_pipeline(start_step=None):
         print(f"\n==> {step['name']} başlatılıyor...")
 
         # Önceki adımların çıktıları gerekli ise kontrol et
-        if "inputs" in step:
-            if not check_files_exist(step["inputs"]):
-                raise FileNotFoundError(
-                    f"Gerekli dosyalar eksik: {step['inputs']}. "
-                    f"Lütfen önceki adımları çalıştırın."
-                )
+        if "inputs" in step and not check_files_exist(step["inputs"]):
+            raise FileNotFoundError(
+                f"Gerekli dosyalar eksik: {step['inputs']}. "
+                f"Lütfen önceki adımları çalıştırın."
+            )
 
         # Adımı çalıştır
         run_script(step["script"])

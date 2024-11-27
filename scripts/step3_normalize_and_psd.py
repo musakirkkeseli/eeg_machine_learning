@@ -1,4 +1,11 @@
 # step3_normalize_and_psd.py
+import os
+import sys
+
+# config.py'nin bulunduğu ana dizini modül arama yoluna ekle
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import FILTERED_EEG_FILE, NORMALIZED_EEG_FILE, STEP3_PSD_COMPARISON
 import numpy as np
 from scipy.stats import zscore
 from scipy.signal import welch
@@ -38,14 +45,14 @@ def normalize_and_analyze(filtered_file, normalized_out, fs=128):
     plt.ylabel("Güç Yoğunluğu")
     plt.legend()
     plt.grid()
-    plt.savefig("step3_psd_comparison.png")
+    plt.savefig(STEP3_PSD_COMPARISON)
     plt.show()
     print("PSD grafiği oluşturuldu: step3_psd_comparison.png")
 
 if __name__ == "__main__":
     # Girdi ve çıktı dosyaları
-    filtered_file = 'Filtered_DataEEG.npy'  # step2 tarafından üretilmiş dosya
-    normalized_out = 'Normalized_Filtered_DataEEG.npy'
+    filtered_file = FILTERED_EEG_FILE # step2 tarafından üretilmiş dosya
+    normalized_out = NORMALIZED_EEG_FILE 
 
     # Örnekleme frekansı
     fs = 128
