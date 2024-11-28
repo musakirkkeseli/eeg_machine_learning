@@ -22,6 +22,8 @@ SELECTED_FEATURES_FILE = os.path.join(DATA_OUTPUT_DIR, "Selected_Features.npy")
 STEP2_PSD_COMPARISON = os.path.join(DATA_OUTPUT_DIR, "step2_psd_comparison.png")
 STEP3_PSD_COMPARISON = os.path.join(DATA_OUTPUT_DIR, "step3_psd_comparison.png")
 STEP4_FEATURE_SCORES = os.path.join(DATA_OUTPUT_DIR, "step4_feature_scores.png")
+KNN_Confusion_Matrix = os.path.join(DATA_OUTPUT_DIR, "knn_confusion_matrix.png")
+SVM_Confusion_Matrix = os.path.join(DATA_OUTPUT_DIR, "svm_confusion_matrix.png")
 
 # Script dosyaları
 STEP1_SCRIPT = os.path.join(SCRIPT_DIR, "step1_extract_and_save.py")

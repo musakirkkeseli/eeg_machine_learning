@@ -1,11 +1,10 @@
-# step5_model_training.py
 import os
 import sys
 
 # config.py'nin bulunduğu ana dizini modül arama yoluna ekle
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import SELECTED_FEATURES_FILE, DATA_LOCO_FILE
+from config import SELECTED_FEATURES_FILE, DATA_LOCO_FILE, STEP5_SCRIPT, KNN_Confusion_Matrix, SVM_Confusion_Matrix
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
@@ -48,12 +47,12 @@ def train_and_evaluate(features_file, labels_file):
     svm_pred = svm.best_estimator_.predict(X_test)
 
     print("\nKNN Performansı:")
-    evaluate_model(y_test, knn_pred)
+    evaluate_model(y_test, knn_pred, model_name="KNN")
 
     print("\nSVM Performansı:")
-    evaluate_model(y_test, svm_pred)
+    evaluate_model(y_test, svm_pred, model_name="SVM")
 
-def evaluate_model(y_true, y_pred):
+def evaluate_model(y_true, y_pred, model_name):
     """
     Model performansını değerlendirir ve karışıklık matrisini çizdirir.
     """
@@ -71,10 +70,22 @@ def evaluate_model(y_true, y_pred):
     cm = confusion_matrix(y_true, y_pred)
     plt.figure(figsize=(8, 6))
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=np.unique(y_true), yticklabels=np.unique(y_true))
-    plt.title("Karışıklık Matrisi")
+    plt.title(f"{model_name} Karışıklık Matrisi")
     plt.xlabel("Tahmin Edilen")
     plt.ylabel("Gerçek")
-    plt.show()
+    
+    # Output path'yi config dosyasındaki uygun değişken ile ayarla
+    if model_name == "KNN":
+        output_path = KNN_Confusion_Matrix
+    elif model_name == "SVM":
+        output_path = SVM_Confusion_Matrix
+    else:
+        raise ValueError(f"Beklenmeyen model adı: {model_name}")
+    
+    # PNG dosyasına kaydetme
+    plt.savefig(output_path)
+    print(f"{model_name} Karışıklık Matrisi kaydedildi: {output_path}")
+    plt.close()
 
 if __name__ == "__main__":
     # Girdi dosyaları
