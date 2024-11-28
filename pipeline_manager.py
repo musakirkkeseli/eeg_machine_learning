@@ -23,9 +23,15 @@ steps = [
         "outputs": [NORMALIZED_EEG_FILE, STEP3_PSD_COMPARISON],
     },
     {
+        "name": "Step 3.1 - MinMaxScaler",
+        "script": STEP3_1_SCRIPT,  # MinMaxScaler için yeni script ekliyoruz
+        "inputs": [NORMALIZED_EEG_FILE],
+        "outputs": [NORMALIZED_MINMAX_EEG_FILE],  # Yeni MinMaxScaler çıktısı
+    },
+    {
         "name": "Step 4 - Feature Selection",
         "script": STEP4_SCRIPT,
-        "inputs": [NORMALIZED_EEG_FILE, DATA_LOCO_FILE],
+        "inputs": [NORMALIZED_MINMAX_EEG_FILE, DATA_LOCO_FILE],  # Yeni dosya kullanılacak
         "outputs": [SELECTED_FEATURES_FILE, STEP4_FEATURE_SCORES],
     },
     {
